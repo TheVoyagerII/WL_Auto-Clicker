@@ -1,0 +1,64 @@
+The WL auto-clicker project came into existence through a combination of frustation and curiosity.
+I needed an auto-clicker for my Minecraft world. But none that I found would work.
+Either a bad hotkey (F8 which opens remote session or something), non-configurable hotkey, or just not running at all.
+The main issue seemed to be that most of these auto-clickers were suited for X11 server architecture, and didn't work well on Wayland.
+So, I thought, "Well, good opportunity to understand how these work, and also just do something that will actually make sense for me to be doing a CS Degree.
+Now, I know, there might be many auto-clickers that would be working on Wayland.
+But this was just my attempt, for me to learn and build something for myself, and to give something back to the open-source community.
+I would appreciate any feedback. Email : pranjalsharma3554@gmail.com
+I'm still super new to everything so let's see where I end up.
+And oh, thanks for being here and reading this.
+
+---------- Part 1 : Getting permissions to add virtual HID ----------
+
+So there's a uinput device file, located at /dev/uinput, that allows the user to build a virtual Human Interface Device, or HID.
+This device simulates hardware inputs, so this is what will generate our clicks.
+The first step is to tell uinput, "Hey, I want to make a device, and this is what it can handle", like left-click, right-click, keyboard, etc.
+But you can't directly edit uinput; linux doesn't allow you. So first, you have to edit the file's permissions to allow group to update it.
+(Why? The Owner can already do it, but that's the root. If someone else wants to, they need to make a group).
+But chmod doesn't cut it; this file's permissions are read at boot from a file. You need to update the permissions there.
+
+This is all in a daemon. The daemon is at /etc/udev/rules.d . You make a .rules file, which ACTION="add" (cause you're adding the uinput file),KERNEL=="uinput",MODE="660"(RW for group),OWNER="<ownername>" or GROUP="<groupname>"
+Add it to rules.d, reboot the rule files and re-trigger actions. And start a new terminal session.
+
+---------- Part 2 : Writing the clicking program ----------
+
+The 500 or so lines look like a lot, and they are. But a lot of that is just checks, cause I don't want some malicious, maybe even
+ignorant user, to disintegrate my program or their device. But the main things here are:
+
+1. The clicker function
+    From what I understood, a click is just a write to a file that the computer continuously reads from. This write is of a struct, which defines the 
+    type of write(mouse, keyboard, etc. I think), it's code (different keys, vs lmb or rmb), and it's value (pressed, released, held). So, our program
+    uses the custom emit function (conveniently listed at https://www.kernel.org/doc/Documentation/input/uinput.rst) to write these structs to the uinput
+    file.
+    And, I use delta time (difference between time intervals) instead of sleep as a ticker. Instead of calculating how long to wait, I calculate when the
+    next click should be and has that time passed already or not. This way, errors due to sleep (which usually only sleeps at least that amount of time)
+    don't get carried over to subsequent iterations.
+
+2. The keyboard input function
+    Continuously, for the lifetime of the program, reads keyboard inputs from the user. Doesn't store them (I don't want your Bitwallet password vro).
+    On the rising edge of the hotkey, that is, when all keys in the hotkey combination are pressed together, it starts/stops the program. But only the 
+    given keys are checked for match (if it's a hotkey combination).
+
+That's it. All other are helper functions, like to convert secs to nanoseconds. A lot of file opening, reading and writing.
+
+---------- Part 3 : Writing the README ----------
+
+This was my favourite part, and the fastest too. Elaborating things as well as possible, while revealing as less real details about the code as possible,
+so as to not bore the average computer user. Looked really clean, hopefully others think so too.
+
+I was so happy when the program ran for the first time.
+
+At one point, I changed idea to allow cps < 1, because my minecraft farm needed 5 seconds per click, or 0.2 cps. So I changed the input to accept and
+convert double, and completely didn't realise that I was type-casting it to int when converting it to ns_per_click. Integer Overflow, crashed both my minecraft
+and my Web Browser, but everything else was fine. The only crash during this entire process.
+
+---------- Part 4 : Packaging, and Uploading ----------
+
+Here I am today. Took me about 2 weeks to develop the entire thing. On every step there was some issue, I needed some tool, and I asked AI what tool could I use.
+Then I would go read about that tool, implement, debug, and repeat. My friend constantly pestered me that AI and Python can do this in 5 mins.
+But they can't give me the satisfaction and experience.
+
+But the AppImage is ready, and I'll upload it to the repo tomorrow.
+
+Thanks for reading this, this took a while to write, and surely will take to read too.
