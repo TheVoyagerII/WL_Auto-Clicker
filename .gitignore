@@ -1,0 +1,4 @@
+*.AppImage
+/build/
+prog
+/WL_Auto-Clicker.AppDir/prog
