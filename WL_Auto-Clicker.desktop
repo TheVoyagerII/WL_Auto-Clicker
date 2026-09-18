@@ -2,6 +2,6 @@
 Type=Application
 Name=WL_Auto-Clicker
 Exec=prog
-Icon=WL_Auto-Clicker.icon
+Icon=WL_Auto-Clicker_Icon
 Categories=Utility;
 Terminal=true
