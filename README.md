@@ -60,6 +60,8 @@ Enclose these in single quotes `'` in the terminal shell to pass them successful
 - `'ctrl+\'`
 - ``"ctrl+`"``
 
+>Note: The default hotkey combination is `` ctrl+` ``;
+
 ### Permitted keys for Hotkey Combination
 | Type of key | Permitted Keys |
 |-------------|----------------|
