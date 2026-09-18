@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# This is AppRun
+
+HERE="$(dirname "$(readlink -f "${0}")")"
+CONFIG_DIR="$HOME/.config/WL_Auto-Clicker"
+SETUP_MARKER_FILE="$CONFIG_DIR/setup_complete"
+
+if [ ! -f "$SETUP_MARKER_FILE" ]; then
+    echo "First login detected. Launching setup file...\n"
+    ran_from_appimg=1 bash "$HERE/user_prompt.sh"
+    setup_exit_code=$?
+
+    if [ $setup_exit_code -ne 0 ]; then
+        echo "Setup failed. Please re-run this Appimage\n"
+        exit 1
+    fi
+    
+    mkdir -p $CONFIG_DIR
+    touch $SETUP_MARKER_FILE
+    echo "Setup Complete\n"
+else
+    if [ "$#" -eq 0 ]; then
+    echo "usage: ./WL_Auto-Clicker.Appimage --hotkey <hotkey-string>\n"
+    echo " ./WL_Auto-Clicker.Appimage --start <button> <cps>\n"
+    exit 0
+    fi
+
+exec "$HERE/./prog" "$@"
+fi

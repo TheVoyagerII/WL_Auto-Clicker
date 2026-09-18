@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=WL_Auto-Clicker
+Exec=prog
+Icon=WL_Auto-Clicker.icon
+Categories=Utility;
+Terminal=true
