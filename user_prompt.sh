@@ -28,7 +28,7 @@ if [[ "$usr_or_grp_option" == "m" || "$usr_or_grp_option" == "M" ]]; then
 else
     echo "ACTION==\"add\",KERNEL=\"uinput\",MODE=\"600\",OWNER=\"$USER" > "$uinput_perms_file"
 fi
-echo "The Auto-Clicker needs to know which keyboard device is the input received from. \
+echo -e "The Auto-Clicker needs to know which keyboard device is the input received from. \
 The setup will run a command that lists available devices and some information pertaining to them. \
 One of them will be Handlers flag, which contains an event entry next to them. \
 Please enter the number specified next to the event entry on the next prompt.\nPress c to continue...."
@@ -37,10 +37,10 @@ echo
 grep -A6 -i "keyboard" "/proc/bus/input/devices"
 read -p "Please enter the number next to 'event': " event_num
 while [ ! -e "/dev/input/event$event_num" ]; do
-    echo "\n"
+    echo -e "\n"
     read -p "Entry event$event_num not found. Please try again: " event_num
 done
-echo "Entry successful! Proceeding...\n"
+echo -e "Entry successful! Proceeding...\n"
 echo $event_num > ~/.config/WL_Auto-Clicker/EVENT_NUM.txt
 sudo mv "$uinput_perms_file" "/etc/udev/rules.d/"
 sudo udevadm control --reload
@@ -55,10 +55,10 @@ fi
 
 if [[ "$new_session_need" = true ]]; then
     if [ -z "$ran_from_appimg" ]; then
-        echo "Group permissions updated. Starting new terminal session..."
+        echo -e "Group permissions updated. Starting new terminal session...\n"
         echo "Note: You are in a subshell of the previous session. Do not exit until the process is done, or open a fresh terminal session instead."
         exec bash
     else
-        echo "Group permissions updated. Please log out, then log in again, and run Appimage again.\n"
+        echo -e "Group permissions updated. Please log out, then log in again, and run Appimage again.\n"
     fi
 fi
