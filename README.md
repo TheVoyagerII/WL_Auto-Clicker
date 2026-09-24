@@ -108,5 +108,3 @@ Example usage:
 4. Run `./WL_Auto-Clicker.AppImage`.
 
 The files inside will run, and may ask you to type your password. This is only for some `sudo` commands used to grant permissions.
-
-## Contributions
